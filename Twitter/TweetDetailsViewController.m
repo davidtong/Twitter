@@ -22,6 +22,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *favoriteButton;
 @property (weak, nonatomic) IBOutlet UIButton *retweetButton;
 @property (weak, nonatomic) IBOutlet UIButton *replyButton;
+
 - (IBAction)favoriteTouchUp:(id)sender;
 - (IBAction)replyTouchUp:(id)sender;
 - (IBAction)retweetTouchUp:(id)sender;
@@ -58,16 +59,16 @@
 - (IBAction)favoriteTouchUp:(id)sender {
     NSString *tweetId = self.tweet.tweetId;
     
-    if (self.favoriteButton.enabled == YES) {
+    if (self.favoriteButton.backgroundColor == nil) {
         [[TwitterClient sharedInstance] favoriteWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:tweetId, @"id", nil] completion:^(Tweet *tweet, NSError *error) {
             if (error == nil) {
-                self.favoriteButton.enabled = NO;
+                self.favoriteButton.backgroundColor = [UIColor brownColor];
             }
         }];
     } else {
         [[TwitterClient sharedInstance] unfavoriteWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:tweetId, @"id", nil] completion:^(Tweet *tweet, NSError *error) {
             if (error == nil) {
-                self.favoriteButton.enabled = YES;
+                self.favoriteButton.backgroundColor = nil;
             }
         }];
     }
