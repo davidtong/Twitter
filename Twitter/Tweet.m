@@ -15,7 +15,7 @@
     if (self) {
         self.user = [[User alloc] initWithDictionary:dictionary[@"user"]];
         self.text = dictionary[@"text"];
-        self.id = (long)dictionary[@"id"];
+        self.tweetId = dictionary[@"id"];
                      
         NSString *createdAtString = dictionary[@"created_at"];
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];

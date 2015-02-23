@@ -56,16 +56,16 @@
 }
 
 - (IBAction)favoriteTouchUp:(id)sender {
-    long tweetId = self.tweet.id;
+    NSString *tweetId = self.tweet.tweetId;
     
     if (self.favoriteButton.enabled == YES) {
-        [[TwitterClient sharedInstance] favoriteWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"%ld", tweetId], @"id", nil] completion:^(Tweet *tweet, NSError *error) {
+        [[TwitterClient sharedInstance] favoriteWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:tweetId, @"id", nil] completion:^(Tweet *tweet, NSError *error) {
             if (error == nil) {
                 self.favoriteButton.enabled = NO;
             }
         }];
     } else {
-        [[TwitterClient sharedInstance] unfavoriteWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"%ld", tweetId], @"id", nil] completion:^(Tweet *tweet, NSError *error) {
+        [[TwitterClient sharedInstance] unfavoriteWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:tweetId, @"id", nil] completion:^(Tweet *tweet, NSError *error) {
             if (error == nil) {
                 self.favoriteButton.enabled = YES;
             }
@@ -76,14 +76,14 @@
 
 - (IBAction)replyTouchUp:(id)sender {
     ComposeViewController *vc = [[ComposeViewController alloc] init];
-    vc.replyHandle = self.tweet.user.screenName;
+    vc.replyTweet = self.tweet;
     
     [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
 }
 
 - (IBAction)retweetTouchUp:(id)sender {
-    long tweetId = self.tweet.id;
-    [[TwitterClient sharedInstance] retweetWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"%ld", tweetId], @"id", nil] completion:^(Tweet *tweet, NSError *error) {
+    NSString *tweetId = self.tweet.tweetId;
+    [[TwitterClient sharedInstance] retweetWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:tweetId, @"id", nil] completion:^(Tweet *tweet, NSError *error) {
         if (error == nil) {
             [self onReturn];
         }

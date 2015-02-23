@@ -9,6 +9,7 @@
 #import "ComposeViewController.h"
 #import "TweetsViewController.h"
 #import "TwitterClient.h"
+#import "Tweet.h"
 
 @interface ComposeViewController () <UITextViewDelegate>
 
@@ -41,8 +42,8 @@
     
     self.composeTextView.delegate = self;
     
-    if (self.replyHandle.length > 0) {
-        self.composeTextView.text = [NSString stringWithFormat:@"@%@ ", self.replyHandle];
+    if (self.replyTweet) {
+        self.composeTextView.text = [NSString stringWithFormat:@"@%@ ", self.replyTweet.user.screenName];
     }
 }
 
@@ -65,7 +66,7 @@
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
-    if (self.replyHandle.length == 0) {
+    if (self.replyTweet == nil) {
         self.composeTextView.text = @"";
     }
 }
@@ -76,12 +77,27 @@
 }
 
 - (void)onTweet {
-    [[TwitterClient sharedInstance] tweetWithParams:[NSDictionary dictionaryWithObjectsAndKeys:self.composeTextView.text, @"status", nil] completion:^(Tweet *tweet, NSError *error) {
-        if (error == nil) {
-            [self onReturn];
-        } else {
-        }
-    }];
+    NSString *tweetStatus = self.composeTextView.text;
+    if (self.replyTweet != nil) {
+        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                tweetStatus, @"status",
+                                self.replyTweet.tweetId, @"in_reply_to_status_id",
+                                nil];
+        [[TwitterClient sharedInstance] tweetWithParams:params completion:^(Tweet *tweet, NSError *error) {
+            if (error == nil) {
+                [self onReturn];
+            }
+        }];
+    } else {
+        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                tweetStatus, @"status",
+                                nil];
+        [[TwitterClient sharedInstance] tweetWithParams:params completion:^(Tweet *tweet, NSError *error) {
+            if (error == nil) {
+                [self onReturn];
+            }
+        }];
+    }
 }
 
 /*

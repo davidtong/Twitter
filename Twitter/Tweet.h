@@ -13,7 +13,7 @@
 @property (nonatomic, strong) NSString *text;
 @property (nonatomic, strong) User *user;
 @property (nonatomic, strong) NSDate *createdAt;
-@property (nonatomic, assign) long id;
+@property (nonatomic, strong) NSString *tweetId;
 
 
 # pragma mark Instance methods
