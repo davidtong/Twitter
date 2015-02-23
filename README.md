@@ -28,4 +28,4 @@ Time spent: `<Number of hours spent>`
 
 ### Walkthrough
 
-![Video Walkthrough](https://raw.githubusercontent.com/davidtongbox/Twitter/master/Twitter/twitter.gif)
+![Video Walkthrough](https://raw.githubusercontent.com/davidtongbox/Twitter/master/twitter.gif)
