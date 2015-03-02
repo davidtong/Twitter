@@ -9,6 +9,7 @@
 #import "LoginViewController.h"
 #import "TwitterClient.h"
 #import "TweetsViewController.h"
+#import "CompositeViewController.h"
 
 @interface LoginViewController ()
 
@@ -22,7 +23,9 @@
         if (user != nil) {
             // present the tweets view
             //[self presentViewController:[[TweetsViewController alloc] init] animated:YES completion:nil];
-            [self presentViewController:[[UINavigationController alloc] initWithRootViewController:[[TweetsViewController alloc] init]] animated:YES completion:nil];
+            //[self presentViewController:[[UINavigationController alloc] initWithRootViewController:[[TweetsViewController alloc] init]] animated:YES completion:nil];
+            [self presentViewController:[[CompositeViewController alloc] initWithUserAndView:user view:[[TweetsViewController alloc] initWithNibName:@"TweetsViewController" bundle:nil]] animated:YES completion:nil];
+            //self.window.rootViewController = [[CompositeViewController alloc] initWithUserAndView:user view:[[TweetsViewController alloc] initWithNibName:@"TweetsViewController" bundle:nil]];
             //self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[TweetsViewController alloc] init]];
         } else {
             // present the error view

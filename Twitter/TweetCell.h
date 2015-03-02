@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "Tweet.h"
 
+extern NSString * const UserProfileDidSelect;
+
 @interface TweetCell : UITableViewCell
 
 @property (nonatomic, strong) Tweet * tweet;

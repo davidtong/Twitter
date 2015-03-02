@@ -19,6 +19,8 @@
 
 - (void)homeTimelineWithParams:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion;
 
+- (void)mentionsWithParams:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion;
+
 - (void)tweetWithParams:(NSDictionary *)params completion:(void (^)(Tweet *, NSError *))completion;
 
 - (void)favoriteWithParams:(NSDictionary *)params completion:(void (^)(Tweet *, NSError *))completion;

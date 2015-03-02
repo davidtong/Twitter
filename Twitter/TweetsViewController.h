@@ -11,4 +11,6 @@
 @interface TweetsViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
+- (TweetsViewController *) initWithType:(NSString *)type;
+
 @end

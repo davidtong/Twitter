@@ -8,6 +8,7 @@
 
 #import "TweetDetailsViewController.h"
 #import "ComposeViewController.h"
+#import "CompositeViewController.h"
 #import "TweetsViewController.h"
 #import "UIImageView+AFNetworking.h"
 #import "TwitterClient.h"
@@ -92,7 +93,9 @@
 }
 
 - (void)onReturn {
-    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:[[TweetsViewController alloc] init]] animated:YES completion:nil];
+    //[self presentViewController:[[UINavigationController alloc] initWithRootViewController:[[TweetsViewController alloc] init]] animated:YES completion:nil];
+    CompositeViewController *cvc = (CompositeViewController*)self.parentViewController.parentViewController;
+    [cvc changeMainView:[[TweetsViewController alloc] init]];
 }
 
 - (void)setTweet {
@@ -126,5 +129,6 @@
     // Pass the selected object to the new view controller.
 }
 */
+
 
 @end

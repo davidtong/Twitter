@@ -9,9 +9,13 @@
 #import "TweetCell.h"
 #import "UIImageView+AFNetworking.h"
 #import "ComposeViewController.h"
+#import "CompositeViewController.h"
+#import "ProfileViewController.h"
 #import "TweetsViewController.h"
 #import "Tweet.h"
 #import "TwitterClient.h"
+
+NSString * const UserProfileDidSelect = @"UserProfileDidSelect";
 
 @interface TweetCell ()
 
@@ -28,6 +32,7 @@
 - (IBAction)retweetTouchUp:(id)sender;
 - (IBAction)favoriteTouchUp:(id)sender;
 - (IBAction)replyTouchUp:(id)sender;
+- (void)onTappingUser:(UITapGestureRecognizer *)tapGestureRecognizer;
 
 
 
@@ -70,14 +75,37 @@
     }
     
     self.createdAtLabel.text = createdLabel;
+    
+    // Tap Recognizers
+    UITapGestureRecognizer *tapGesture1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onTappingUser:)];
+    UITapGestureRecognizer *tapGesture2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onTappingUser:)];
+    UITapGestureRecognizer *tapGesture3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onTappingUser:)];
+    
+    [self.nameLabel.viewForBaselineLayout addGestureRecognizer:tapGesture1];
+    [self.profileImage.viewForBaselineLayout addGestureRecognizer:tapGesture2];
+    [self.handleLabel.viewForBaselineLayout addGestureRecognizer:tapGesture3];
+    
+    self.nameLabel.userInteractionEnabled = YES;
+    self.handleLabel.userInteractionEnabled = YES;
+    self.profileImage.userInteractionEnabled = YES;
+    
+    [tapGesture1 cancelsTouchesInView];
+    [tapGesture2 cancelsTouchesInView];
+    [tapGesture3 cancelsTouchesInView];
+    
 }
 
 - (IBAction)retweetTouchUp:(id)sender {
     NSString *tweetId = _tweet.tweetId;
     [[TwitterClient sharedInstance] retweetWithParams:[[NSDictionary alloc] initWithObjectsAndKeys:tweetId, @"id", nil] completion:^(Tweet *tweet, NSError *error) {
         if (error == nil) {
+            /*
             TweetsViewController *vc = [[TweetsViewController alloc] init];
             self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:vc];
+             */
+            
+            //CompositeViewController *cvc = (CompositeViewController*)self. parentViewController;
+            //[cvc changeMainView:[[TweetsViewController alloc] init]];
         }
     }];
 }
@@ -107,4 +135,12 @@
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:vc];
     //[self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
 }
+
+- (void)onTappingUser:(UITapGestureRecognizer *)tapGestureRecognizer {
+    //CompositeViewController *cvc = (CompositeViewController *)self.superview.superview.superview;
+    //[cvc changeMainView:[[ProfileViewController alloc] initWithUser:cvc.currentUser]];
+    NSDictionary* userInfo = @{@"user": self.tweet.user};
+    [[NSNotificationCenter defaultCenter] postNotificationName:UserProfileDidSelect object:self userInfo:userInfo];
+}
+
 @end

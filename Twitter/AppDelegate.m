@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "CompositeViewController.h"
 #import "LoginViewController.h"
 #import "TweetsViewController.h"
 #import "TwitterClient.h"
@@ -31,10 +32,11 @@
     
     User *user = [User currentUser];
     if (user != nil) {
-        NSLog(@"Welcome %@", user.name);
-        self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[TweetsViewController alloc] init]];
+        //self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[TweetsViewController alloc] init]];
+        self.window.rootViewController = [[CompositeViewController alloc] initWithUserAndView:user view:[[TweetsViewController alloc] initWithNibName:@"TweetsViewController" bundle:nil]];
+        
+        //[[UINavigationController alloc] initWithRootViewController:[[CompositeViewController alloc] init]];
     } else {
-        NSLog(@"Not logged in");
         self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[LoginViewController alloc] init]];
     }
     

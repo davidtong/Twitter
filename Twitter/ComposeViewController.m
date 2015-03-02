@@ -55,11 +55,11 @@
 - (void)textViewDidChange:(UITextView *)textView {
     if (self.composeTextView.text.length > 140) {
         self.remainingLabel.textColor = [UIColor redColor];
-        self.remainingLabel.text = [NSString stringWithFormat:@"-%lu", (self.composeTextView.text.length - 140)];
+        self.remainingLabel.text = [NSString stringWithFormat:@"-%d", (int)(self.composeTextView.text.length - 140)];
         self.navigationItem.rightBarButtonItem.enabled = NO;
     } else {
         self.remainingLabel.textColor = [UIColor blackColor];
-        self.remainingLabel.text = [NSString stringWithFormat:@"%lu", (140 - self.composeTextView.text.length)];
+        self.remainingLabel.text = [NSString stringWithFormat:@"%d", (int)(140 - self.composeTextView.text.length)];
         
         self.navigationItem.rightBarButtonItem.enabled = YES;
     }

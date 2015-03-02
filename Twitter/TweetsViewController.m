@@ -8,6 +8,7 @@
 
 #import "TweetsViewController.h"
 #import "ComposeViewController.h"
+#import "CompositeViewController.h"
 #import "TweetDetailsViewController.h"
 #import "User.h"
 #import "Tweet.h"
@@ -20,6 +21,7 @@
 
 @property (nonatomic, strong) NSArray *tweets;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (strong, nonatomic) NSString *type;
 
 - (void)onRefresh;
 - (void)onCompose;
@@ -34,7 +36,6 @@
     // Do any additional setup after loading the view from its nib.
     
     UIColor *twitterDefaultColor = [UIColor colorWithHue:0.54 saturation:1 brightness:0.71 alpha:1];
-
     
     self.navigationItem.title = @"Twitter";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Logout" style:UIBarButtonItemStyleDone target:self action:@selector(onLogout)];
@@ -44,22 +45,21 @@
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor  whiteColor];
     self.navigationItem.rightBarButtonItem.tintColor = [UIColor  whiteColor];
     
-    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerNib:[UINib nibWithNibName:@"TweetCell" bundle:nil] forCellReuseIdentifier:@"TweetCell"];
     self.tableView.rowHeight = UITableViewAutomaticDimension;
-    
-    //[self onRefresh];
-    
+
+    [self onRefresh];
+
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(onRefresh) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0];
-
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [self onRefresh];
+    //[self onRefresh];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -80,14 +80,15 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"Selected %ld", (long)indexPath.row);
-    
     TweetDetailsViewController * vc = [[TweetDetailsViewController alloc] init];
 
     // @NOTE(dtong) instead of assigning, can also define a initWithTweet
     vc.tweet = self.tweets[indexPath.row];
     
-    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
+    CompositeViewController *cvc = (CompositeViewController*)self.parentViewController.parentViewController;
+    [cvc changeMainView:vc];
+    
+    //[self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
 }
 
 - (void)onLogout {
@@ -101,18 +102,33 @@
 }
 
 - (void)onRefresh {
-    [[TwitterClient sharedInstance] homeTimelineWithParams:[NSDictionary dictionaryWithObjectsAndKeys:@"24", @"count", nil] completion:^(NSArray *tweets, NSError *error) {
-        if (error == nil) {
-            self.tweets = tweets;
-            
-            //[Tweet tweetsWithArray:tweets];
-            [self.tableView reloadData];
-            [self.refreshControl endRefreshing];
-        } else {
-            // @NOTE(dtong) Occasionally, network request fails with a status code 429 Too Many Requests 
-            NSLog(@"Error on refresh: %@", error);
-        }
-    }];
+    if ([self.type isEqual: @"mentions"]) {
+        [[TwitterClient sharedInstance] mentionsWithParams:[NSDictionary dictionaryWithObjectsAndKeys:@"24", @"count", nil] completion:^(NSArray *tweets, NSError *error) {
+            if (error == nil) {
+                self.tweets = tweets;
+                
+                //[Tweet tweetsWithArray:tweets];
+                [self.tableView reloadData];
+                [self.refreshControl endRefreshing];
+            } else {
+                // @NOTE(dtong) Occasionally, network request fails with a status code 429 Too Many Requests
+                NSLog(@"Error on refresh: %@", error);
+            }
+        }];
+    } else {
+        [[TwitterClient sharedInstance] homeTimelineWithParams:[NSDictionary dictionaryWithObjectsAndKeys:@"24", @"count", nil] completion:^(NSArray *tweets, NSError *error) {
+            if (error == nil) {
+                self.tweets = tweets;
+                
+                //[Tweet tweetsWithArray:tweets];
+                [self.tableView reloadData];
+                [self.refreshControl endRefreshing];
+            } else {
+                // @NOTE(dtong) Occasionally, network request fails with a status code 429 Too Many Requests
+                NSLog(@"Error on refresh: %@", error);
+            }
+        }];
+    }
 }
 
 /*
@@ -124,5 +140,10 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (TweetsViewController *) initWithType:(NSString *)type {
+    self.type = type;
+    return self;
+}
 
 @end
