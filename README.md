@@ -20,7 +20,7 @@ Time spent: `12`
 
 #### Optional
 
-- [] Other optional tasks
+- [ ] Other optional tasks
 
 ### Walkthrough
 
