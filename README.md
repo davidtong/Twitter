@@ -24,4 +24,4 @@ Time spent: `12`
 
 ### Walkthrough
 
-![Video Walkthrough](https://raw.githubusercontent.com/davidtongbox/Twitter/master/twitter2.gif)
+![Video Walkthrough](https://raw.githubusercontent.com/davidtongbox/Twitter/master/Twitter2.gif)
